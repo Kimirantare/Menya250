@@ -1,0 +1,359 @@
+<?php 
+//include('../db_files/manager_rest.php');
+session_start();
+$db = mysqli_connect('localhost', 'root', '', 'menya');
+$man_username = $_SESSION['manager'];
+$manager = $db->query("SELECT * FROM manager WHERE username='$man_username'");
+$true = $manager->fetch_assoc();
+
+$classes = $db->query("SELECT * FROM class");
+$num2 = $classes->num_rows;
+
+$select = $db->query("SELECT * FROM class");
+
+$lessons = $db->query("SELECT * FROM lesson");
+
+$students = $db->query("SELECT * FROM students");
+
+$stream = $db->query("SELECT * FROM stream");
+
+
+$num = $students->num_rows;
+
+
+$teacher = $db->query("SELECT * FROM teachers");
+$num3 = $teacher->num_rows;
+
+$total = $num + $num3;
+?>
+
+<!DOCTYPE html>
+<!-- Website - www.codingnepalweb.com -->
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Menya250 | Admin Page</title>
+    
+     <!-- Vendor CSS Files -->
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+  <link rel="stylesheet" type="text/css" href="../assets/css/w3.css">
+  <link href="../assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="../assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="../assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <!--------------------------->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script type="text/javascript" src="../assets/js/Chart.js"></script>
+  </head>
+  <body>
+    <div class="sidebar">
+      <div class="logo-details">
+        <i class="bx bxl-c-plus-plus"></i>
+        <span class="logo_name">Menya250</span>
+      </div>
+      <ul class="nav-links">
+        <li data-aos="fade-right" data-aos-delay="100">
+          <a href="#" class="active">
+            <i class="bx bx-grid-alt"></i>
+            <span class="links_name">Dashboard</span>
+          </a>
+        </li>
+        <li data-aos="fade-right" data-aos-delay="100">
+          <a href="new_student.php">
+            <i class="bx bx-user-plus"></i>
+            <span class="links_name">Add New Student</span>
+          </a>
+        </li>
+        <li data-aos="fade-right" data-aos-delay="100">
+          <a href="new_teacher.php">
+            <i class="bx bx-user-plus"></i>
+            <span class="links_name">Add New Teacher</span>
+          </a>
+        </li>
+        <li data-aos="fade-right" data-aos-delay="100">
+          <a href="new_lesson.php">
+            <i class="bx bx-book"></i>
+            <span class="links_name">Add New Lesson</span>
+          </a>
+        </li>
+        <li data-aos="fade-right" data-aos-delay="100">
+          <a href="new_class.php">
+            <i class="bx bx-home-smile"></i>
+            <span class="links_name">Add New Class</span>
+          </a>
+        </li>
+        <li class="log_out" data-aos="fade-right" data-aos-delay="100">
+          <a href="../db_files/admin_logout.php">
+            <i class="bx bx-log-out"></i>
+            <span class="links_name">Log out</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <section class="home-section">
+
+      <!-- admin navigation bar-->
+      <nav>
+        <div class="sidebar-button">
+          <i class="bx bx-menu sidebarBtn"></i>
+          <span class="dashboard">Dashboard</span>
+        </div>
+        <div class="search-box">
+          <input type="text" placeholder="Search..." />
+          <i class="bx bx-search"></i>
+        </div>
+        <div class="profile-details">
+          <img src="../assets/img/avatar3.png" alt="" />
+          <span class="admin_name"><strong><?= $true['name']?></strong></span>
+          
+        </div>
+      </nav>
+      <!-- end of admin navigation bar-->
+      
+<!-- basic information area -->
+      <div class="home-content">
+        <div class="overview-boxes">
+          <div class="box" data-aos="fade-up" data-aos-delay="100">
+            <div class="right-side">
+              <div class="box-topic">Total Users</div>
+              <div class="number"><?= $total ?></div>
+            </div>
+            <i class="bx bx-group cart"></i>
+          </div>
+          <div class="box" data-aos="fade-up" data-aos-delay="100">
+            <div class="right-side">
+              <div class="box-topic">Total Students</div>
+              <div class="number"><?= $num ?></div>
+            </div>
+            <i class="bx bxs-user cart two"></i>
+          </div>
+          <div class="box" data-aos="fade-up" data-aos-delay="100">
+            <div class="right-side">
+              <div class="box-topic">Total Teachers</div>
+              <div class="number"><?= $num3 ?></div>
+            </div>
+            <i class="bx bx-briefcase-alt cart three"></i>
+          </div>
+          <div class="box" data-aos="fade-up" data-aos-delay="100">
+            <div class="right-side">
+              <div class="box-topic">Classes</div>
+              <div class="number"><?= $num2 ?></div>
+            </div>
+            <i class="bx bxs-landmark cart four"></i>
+          </div>
+        </div>
+    <!-- end of basic information area -->
+    <!--statistical and message area -->
+        <div class="sales-boxes">
+    <!-- chart area -->
+          <div class="recent-sales box">
+            <div class="title">Statistics</div>
+            <div class="sales-details">
+              <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+            </div>
+          </div>
+    <!--end of chart area -->
+    <!-- user comments area -->
+          <div class="top-sales box">
+            <div class="title">Users Comments</div>
+            <ul class="top-sales-details">
+              <li>
+                <a href="#">
+                  <img src="images/scarves.jpg" alt="" />
+                  <span class="product">Hermes Silk Scarves.</span>
+                </a>
+                <span class="price">$2312</span>
+              </li>
+              <li>
+                <a href="#">
+                  <img src="images/blueBag.jpg" alt="" />
+                  <span class="product">Succi Ladies Bag</span>
+                </a>
+                <span class="price">$1456</span>
+              </li>
+              <li>
+                <a href="#">
+                  <img src="images/bag.jpg" alt="" />
+                  <span class="product">Gucci Womens's Bags</span>
+                </a>
+                <span class="price">$2345</span>
+              </li>
+            </ul>
+          </div>
+      <!-- end of user commnents area-->
+        </div>
+      </div><br>
+
+      <!-- accordions -->
+
+        <button onclick="myFunction('Demo1')" class="container w3-btn w3-block w3-card-2 w3-white w3-round-large w3-text-black w3-left-align w3-sh" 
+        style="font-size: 2rem;size: 4rem; height:5rem; width: 97%; border: white; margin-left: 20px;font-family: 'Poppins', sans-serif;">Classes</button>
+
+          <div id="Demo1" class="w3-container w3-hide w3-accordion-content w3-animate-zoom"><br>
+
+          <input class="w3-input w3-border w3-round-large w3-padding" type="text" placeholder="Search for class..." 
+          id="FilterClass" onkeyup="adminFilter()"><br>
+                      <table class="w3-table table-responsive" id="classTables">
+                <tr>
+                  <th>Class</th>
+                  <th>Number of Pupils</th>
+                  <th>Action</th>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td><a class="w3-btn w3-green w3-round-large w3-hover-blue"
+                                          href="#">Action</a></td>
+                </tr>
+                
+            </table>
+</div><br><br>
+
+        <button onclick="myFunction('Demo2')" class="w3-btn w3-block w3-card-2 w3-white w3-round-large w3-text-black w3-left-align w3-sh" 
+        style="font-size: 2rem;size: 4rem; height:5rem; width: 97%; border: white; margin-left:20px;">Teachers</button>
+
+        <div id="Demo2" class="w3-container w3-hide w3-accordion-content w3-animate-zoom"><br>
+
+            <input class="w3-input w3-border w3-round-large w3-padding" type="text" placeholder="Search for names..." 
+            id="FilterTeacher" onkeyup="teacherFilter()">
+
+            <table class="w3-table table-responsive" id="teacherTables">
+                <tr>
+                  <th>#</th>
+                  <th>Teacher's Names</th>
+                  <th>Username</th>
+                  <th>Lesson</th>
+                  <th>Class</th>
+                  <th>Email</th>
+                  <th>Phone Number</th>
+                  <th>Action</th>
+                </tr>
+                <?php while ($row = $teacher->fetch_assoc()) {
+                            ?>
+                <tr>
+                  <td><?= $row['id'] ?></td>
+                  <td><?= $row['names'] ?></td>
+                  <td><?= $row['username'] ?></td>
+                  <td><?= $row['lesson'] ?></td>
+                  <td><?= $row['class'] ?> <?= $row['stream'] ?></td>
+                  <td><?= $row['email'] ?></td>
+                  <td><?= $row['phone'] ?></td>
+                  <td> <div class="w3-dropdown-hover">
+                          <button class="w3-btn w3-blue w3-round-large w3-hover-green">Action</button>
+                            <div class="w3-dropdown-content w3-round-large ">
+                                  <a href="updateTeacher.php?id=<?=$row['id'] ?>" class="w3-round-large">Update Account</a>
+                                  <a href="delete1.php?id=<?=$row['id'] ?>&action=reception" class="w3-red w3-round-large">Delete Account</a>
+    
+                              </div>
+                        </div> </td>
+                                          
+                </tr>
+                <?php } ?>
+            </table>
+</div><br><br>
+      <!-- end of accordions -->
+    </section>
+
+    <script>
+      //sidebar script
+      let sidebar = document.querySelector(".sidebar");
+      let sidebarBtn = document.querySelector(".sidebarBtn");
+      sidebarBtn.onclick = function () {
+        sidebar.classList.toggle("active");
+        if (sidebar.classList.contains("active")) {
+          sidebarBtn.classList.replace("bx-menu", "bx-menu-alt-right");
+        } else sidebarBtn.classList.replace("bx-menu-alt-right", "bx-menu");
+      };
+      //end of sidebar script
+
+      //script for accordion
+
+      function myFunction(id) {
+        var x = document.getElementById(id);
+        if (x.className.indexOf("w3-show") == -1) {
+          x.className += " w3-show";
+        } else {
+          x.className = x.className.replace(" w3-show", "");
+        }
+      }
+      //end of accordion script
+
+      //script for filtering admin list
+      function adminFilter() {
+        var input, filter, table, tr, td, i;
+        input = document.getElementById("FilterClass");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("classTables");
+        tr = table.getElementsByTagName("tr");
+        for (i = 0; i < tr.length; i++) {
+          td = tr[i].getElementsByTagName("td")[1];
+          if (td) {
+            txtValue = td.textContent || td.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+              tr[i].style.display = "";
+            } else {
+              tr[i].style.display = "none";
+            }
+          }
+        }
+      }//end of script to filter admin list
+
+      //script for filtering teachers list
+      function teacherFilter() {
+        var input, filter, table, tr, td, i;
+        input = document.getElementById("FilterTeacher");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("teacherTables");
+        tr = table.getElementsByTagName("tr");
+        for (i = 0; i < tr.length; i++) {
+          td = tr[i].getElementsByTagName("td")[1];
+          if (td) {
+            txtValue = td.textContent || td.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+              tr[i].style.display = "";
+            } else {
+              tr[i].style.display = "none";
+            }
+          }
+        }
+      } //end of teachers list filter
+
+
+      //chart script
+
+      const xValues = ["P1", "P2", "P3", "P4", "P5", "P6"];
+      const yValues = [55, 49, 44, 24, 50, 80];
+      const barColors = ["red", "green","blue","black","brown", "orange"];
+
+      new Chart("myChart", {
+        type: "bar",
+        data: {
+          labels: xValues,
+          datasets: [{
+            backgroundColor: barColors,
+            data: yValues
+          }]
+        },
+        options: {
+          legend: {display: false},
+          title: {
+            display: true,
+            text: "All Classes Perfomance report"
+          }
+        }
+      });
+
+// end of chart script
+    </script>
+
+      <!-- Vendor JS Files -->
+  <script src="../assets/vendor/aos/aos.js"></script>
+  <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="../assets/vendor/php-email-form/validate.js"></script>
+
+  <!-- Template Main JS File -->
+  <script src="../assets/js/main.js"></script>
+  </body>
+</html>
